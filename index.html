@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Restaurant Grader | Believe in Taste</title>
+<meta name="description" content="Free 15-question restaurant digital visibility check. Know where your restaurant actually stands — and what to fix first." />
+<script src="react.production.min.js"></script>
+<script src="react-dom.production.min.js"></script>
+<script src="bit360-grader-engine.js"></script>
+<style>
+
+  :root {
+    --black:    #0f0f0f;
+    --charcoal: #1c1c1c;
+    --iron:     #2a2a2a;
+    --ash:      #3d3d3d;
+    --mist:     #8a8a8a;
+    --silver:   #c4c4c4;
+    --cream:    #f5f2eb;
+    --white:    #ffffff;
+    --gold:     #c9a84c;
+    --gold-dim: #9a7a32;
+    --red:      #d94f3d;
+    --green:    #3a8a5a;
+    --amber:    #d4872a;
+    --border:   rgba(201,168,76,0.18);
+    --radius:   6px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── LAYOUT ── */
+  .app { min-height: 100vh; display: flex; flex-direction: column; }
+
+  .topbar {
+    background: var(--charcoal);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 12px; }
+  .topbar-logo {
+    font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    color: var(--gold);
+    letter-spacing: 0.01em;
+  }
+  .topbar-sep { color: var(--ash); font-size: 18px; }
+  .topbar-sub {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mist);
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    flex: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 48px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .hero-title {
+    font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+  .hero-title em { color: var(--gold); font-style: italic; }
+  .hero-desc {
+    font-size: 16px;
+    color: var(--silver);
+    max-width: 560px;
+    margin: 0 auto 28px;
+    line-height: 1.7;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--iron);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 8px 20px;
+    font-size: 12px;
+    color: var(--silver);
+  }
+  .hero-badge span { color: var(--gold); font-weight: 600; }
+
+  /* ── SECTION WRAPPER ── */
+  .section {
+    background: var(--charcoal);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .section-body { padding: 18px 20px; }
+
+  /* ── FORM ELEMENTS ── */
+  .field { margin-bottom: 20px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    width: 100%;
+    background: var(--iron);
+    border: 1px solid var(--ash);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    color: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+    max-width: 400px;
+  }
+  input:focus { border-color: var(--gold); }
+
+  .radio-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .radio-btn {
+    padding: 7px 16px;
+    border-radius: 4px;
+    border: 1px solid var(--ash);
+    background: var(--iron);
+    color: var(--silver);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  .radio-btn:hover { border-color: var(--gold-dim); color: var(--cream); }
+  .radio-btn.selected { border-color: var(--gold); background: rgba(201,168,76,0.12); color: var(--gold); font-weight: 600; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    background: var(--iron);
+    border-radius: 3px;
+    height: 4px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 3px;
+    transition: width 0.5s;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--mist);
+    margin-bottom: 8px;
+  }
+
+  /* ── SCORE DISPLAY ── */
+  .score-display {
+    text-align: center;
+    padding: 32px;
+    background: var(--iron);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+  }
+  .score-ring {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 4px solid;
+    margin-bottom: 16px;
+  }
+  .score-ring.high { border-color: var(--green); }
+  .score-ring.mid  { border-color: var(--amber); }
+  .score-ring.low  { border-color: var(--red); }
+  .score-ring-val {
+    font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+    font-size: 42px;
+    line-height: 1;
+  }
+  .score-ring-val.high { color: var(--green); }
+  .score-ring-val.mid  { color: var(--amber); }
+  .score-ring-val.low  { color: var(--red); }
+  .score-ring-label { font-size: 11px; color: var(--mist); margin-top: 2px; }
+  .score-grade {
+    font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+    font-size: 22px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .score-summary { font-size: 13px; color: var(--silver); max-width: 400px; margin: 0 auto; }
+
+  /* ── SCORE BARS ── */
+  .score-item {
+    display: grid;
+    grid-template-columns: 180px 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .score-item:last-child { border-bottom: none; }
+  .score-name { font-size: 13px; color: var(--silver); }
+  .score-bar-wrap { background: var(--iron); border-radius: 3px; height: 6px; overflow: hidden; }
+  .score-bar { height: 100%; border-radius: 3px; transition: width 0.4s; }
+  .score-bar.high  { background: var(--green); }
+  .score-bar.mid   { background: var(--amber); }
+  .score-bar.low   { background: var(--red); }
+  .score-val {
+    font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
+    font-size: 13px;
+    font-weight: 500;
+    min-width: 36px;
+    text-align: right;
+  }
+  .score-val.high { color: var(--green); }
+  .score-val.mid  { color: var(--amber); }
+  .score-val.low  { color: var(--red); }
+
+  /* ── GRADER GRID ── */
+  .grader-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grader-card {
+    background: var(--iron);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .grader-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+
+  /* ── CONSULTATION CTA ── */
+  .cta-banner {
+    background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(201,168,76,0.03));
+    border: 1px solid var(--gold);
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    margin-top: 32px;
+  }
+  .cta-banner h3 {
+    font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+    font-size: 24px;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+  .cta-banner p {
+    font-size: 14px;
+    color: var(--silver);
+    max-width: 520px;
+    margin: 0 auto 20px;
+    line-height: 1.7;
+  }
+  .cta-features {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .cta-feature { font-size: 12px; color: var(--gold); }
+  .cta-feature::before { content: '✓ '; }
+  .cta-note {
+    font-size: 11px;
+    color: var(--mist);
+    margin-top: 12px;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 28px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--gold); color: var(--black); }
+  .btn-primary:hover { background: #d4a83a; }
+
+  /* ── QUESTION CATEGORY LABEL ── */
+  .q-cat {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-right: 8px;
+  }
+  .q-label { font-size: 13px; color: var(--cream); }
+
+  /* ── RESTAURANT NAME FIELD ── */
+  .name-field {
+    margin-bottom: 28px;
+  }
+  .name-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .main { padding: 24px 16px 60px; }
+    .topbar { padding: 0 16px; height: auto; min-height: 56px; flex-wrap: wrap; gap: 8px; padding-top: 10px; padding-bottom: 10px; }
+    .topbar-sub { display: none; }
+    .grader-grid { grid-template-columns: 1fr; }
+    .score-item { grid-template-columns: 1fr auto; }
+    .score-item .score-name { grid-column: 1 / -1; }
+    .cta-banner { padding: 24px 16px; }
+    .hero { padding: 32px 0 28px; }
+  }
+
+  @media (max-width: 430px) {
+    html, body { overflow-x: hidden; max-width: 100vw; }
+    .main { padding: 20px 12px 60px; }
+    .topbar { padding: 8px 12px; }
+    .score-item { grid-template-columns: 1fr auto; }
+    .radio-btn { padding: 6px 12px; font-size: 12px; }
+    input[type="number"] { max-width: 100%; }
+  }
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+'use strict';
+const { useState } = React;
+const h = React.createElement;
+
+// ── ENGINE ────────────────────────────────────────────────────────────────────
+// Sourced from bit360-grader-engine.js (grader-only, no professional engine)
+const E = BIT360GraderEngine;
+const GRADER_QUESTIONS = E.GRADER_QUESTIONS.map(q => ({
+  id:       q.id,
+  label:    q.label,
+  category: q.cat,
+  weight:   q.w,
+  type:     q.type === 'num' ? 'number' : undefined,
+  ...(q.id === 'google_rating' ? { min: 1, max: 5 } : {})
+}));
+const calcGraderScore = E.calcGraderScore;
+
+// ── SCORE HELPERS ─────────────────────────────────────────────────────────────
+function scoreColor(v) {
+  if (v >= 70) return 'high';
+  if (v >= 45) return 'mid';
+  return 'low';
+}
+function scoreGrade(v) {
+  if (v >= 85) return 'Performing Well';
+  if (v >= 70) return 'Good Foundation';
+  if (v >= 55) return 'Needs Attention';
+  if (v >= 40) return 'At Risk';
+  return 'Critical — Act Now';
+}
+function getGraderSummary(score) {
+  if (score >= 85) return 'Strong foundation. Your digital presence is working for you. A deeper consultation can uncover the remaining revenue leaks.';
+  if (score >= 70) return 'You\'re visible, but there are clear gaps that are costing you customers every week.';
+  if (score >= 50) return 'Your restaurant is harder to find than it should be. Competitors are capturing customers you should be getting.';
+  return 'Critical gaps detected. Customers searching for you are finding your competition instead.';
+}
+
+// ── CATEGORY SCORE BREAKDOWN ──────────────────────────────────────────────────
+function getCategoryScores(answers) {
+  function subScore(ids) {
+    let s = 0, t = 0;
+    ids.forEach(id => {
+      const q = GRADER_QUESTIONS.find(q => q.id === id);
+      if (!q) return;
+      t += q.weight;
+      const a = answers[id];
+      if (!a) return;
+      if (id === 'google_rating') {
+        const v = parseFloat(a);
+        if (v >= 4.5) s += q.weight;
+        else if (v >= 4.0) s += q.weight * 0.7;
+        else if (v >= 3.5) s += q.weight * 0.4;
+      } else if (id === 'review_count') {
+        const v = parseInt(a, 10);
+        if (v >= 200) s += q.weight;
+        else if (v >= 100) s += q.weight * 0.8;
+        else if (v >= 50) s += q.weight * 0.5;
+        else if (v >= 20) s += q.weight * 0.3;
+      } else {
+        if (a === 'yes') s += q.weight;
+        else if (a === 'partial') s += q.weight * 0.5;
+      }
+    });
+    return t > 0 ? Math.round((s / t) * 100) : 0;
+  }
+  return [
+    { label: 'Digital Presence', score: subScore(['gbp','website','online_menu','online_ordering','photos','hours_accurate']) },
+    { label: 'Reputation',       score: subScore(['google_rating','review_count','review_response','yelp_claimed']) },
+    { label: 'Social Media',     score: subScore(['social_active','social_consistent']) },
+    { label: 'Operations',       score: subScore(['email_list','competitor_aware','service_standard']) },
+  ];
+}
+
+// ── COMPONENTS ────────────────────────────────────────────────────────────────
+function RadioGroup({ options, value, onChange }) {
+  return h('div', { className: 'radio-group' },
+    options.map(opt =>
+      h('button', {
+        key: opt.value,
+        className: `radio-btn${value === opt.value ? ' selected' : ''}`,
+        onClick: () => onChange(opt.value)
+      }, opt.label)
+    )
+  );
+}
+
+function ScoreBar({ value, label }) {
+  const cat = scoreColor(value);
+  return h('div', { className: 'score-item' },
+    h('div', { className: 'score-name' }, label),
+    h('div', { className: 'score-bar-wrap' },
+      h('div', { className: `score-bar ${cat}`, style: { width: `${value}%` } })
+    ),
+    h('div', { className: `score-val ${cat}` }, `${value}`)
+  );
+}
+
+// ── CONSULTATION CTA ──────────────────────────────────────────────────────────
+// Acuity scheduling page — public, no account required
+const CTA_URL = 'https://believeintaste.as.me/schedule/fd42ae71';
+
+function ConsultationCTA() {
+  return h('div', { className: 'cta-banner' },
+    h('h3', null, 'Your score is the starting point.'),
+    h('p', null,
+      'The Restaurant Grader shows you where the gaps are. A ',
+      h('strong', null, 'Believe in Taste consultation'),
+      ' shows you the root cause, the fix, and the revenue impact — ',
+      h('em', null, 'with a chef consultant and business strategist in the room.')
+    ),
+    h('div', { className: 'cta-features' },
+      [
+        'Root-cause diagnosis',
+        'Food cost & margin analysis',
+        'Priority action plan',
+        'Revenue leak identification',
+        'Operational quick wins',
+        'Branded written report'
+      ].map(f => h('div', { key: f, className: 'cta-feature' }, f))
+    ),
+    h('a', {
+      href: CTA_URL,
+      className: 'btn btn-primary',
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      'data-cta': 'consultation'
+    }, 'Book a Free Consultation →'),
+    h('div', { className: 'cta-note' }, 'No commitment. 30-minute call. We\'ll tell you exactly what we see.')
+  );
+}
+
+// ── GRADER ────────────────────────────────────────────────────────────────────
+function GraderApp() {
+  const [answers, setAnswers]         = useState({});
+  const [restaurantName, setName]     = useState('');
+
+  const set = (id, val) => setAnswers(p => ({ ...p, [id]: val }));
+  const answered = Object.keys(answers).length;
+  const score    = answered > 0 ? calcGraderScore(answers) : 0;
+  const cat      = scoreColor(score);
+  const grade    = scoreGrade(score);
+
+  const yesNo = [
+    { value: 'yes',     label: 'Yes' },
+    { value: 'partial', label: 'Partially' },
+    { value: 'no',      label: 'No' },
+  ];
+
+  return h('div', null,
+
+    // ── Hero ──
+    h('div', { className: 'hero' },
+      h('div', { className: 'hero-eyebrow' }, 'Free Digital Visibility Check'),
+      h('div', { className: 'hero-title' },
+        'Know where your restaurant ', h('em', null, 'actually stands.')
+      ),
+      h('div', { className: 'hero-desc' },
+        'Answer 15 questions. Get your score. See exactly what\'s costing you customers — and what to fix first.'
+      ),
+      h('div', { className: 'hero-badge' },
+        '🕐 Takes about 5 minutes',
+        h('span', null, '·'),
+        '100% Free',
+        h('span', null, '·'),
+        'No signup required'
+      )
+    ),
+
+    // ── Restaurant name ──
+    h('div', { className: 'name-field' },
+      h('label', null, 'Restaurant Name'),
+      h('input', {
+        type: 'text',
+        placeholder: 'Enter your restaurant name...',
+        value: restaurantName,
+        onChange: e => setName(e.target.value)
+      })
+    ),
+
+    // ── Progress ──
+    h('div', { className: 'progress-label' },
+      h('span', null, `${answered} of ${GRADER_QUESTIONS.length} answered`),
+      h('span', null, `Score: ${score}/100`)
+    ),
+    h('div', { className: 'progress-wrap' },
+      h('div', { className: 'progress-bar', style: { width: `${(answered / GRADER_QUESTIONS.length) * 100}%` } })
+    ),
+
+    // ── Questions ──
+    GRADER_QUESTIONS.map(q =>
+      h('div', { key: q.id, className: 'section' },
+        h('div', { className: 'section-body' },
+          h('div', { style: { marginBottom: 10 } },
+            h('span', { className: 'q-cat' }, q.category.toUpperCase()),
+            h('span', { className: 'q-label' }, q.label)
+          ),
+          q.type === 'number'
+            ? h('input', {
+                type: 'number',
+                placeholder: q.id === 'google_rating' ? '1.0 – 5.0' : 'Enter count...',
+                value: answers[q.id] || '',
+                onChange: e => set(q.id, e.target.value),
+                min: q.min, max: q.max
+              })
+            : h(RadioGroup, { options: yesNo, value: answers[q.id], onChange: v => set(q.id, v) })
+        )
+      )
+    ),
+
+    // ── Score result (shown after 10 answers) ──
+    answered >= 10 && h('div', null,
+      h('div', { className: 'score-display', style: { marginTop: 32 } },
+        h('div', { className: `score-ring ${cat}` },
+          h('div', { className: `score-ring-val ${cat}` }, score),
+          h('div', { className: 'score-ring-label' }, '/ 100')
+        ),
+        h('div', { className: 'score-grade' }, grade),
+        h('div', { className: 'score-summary' }, getGraderSummary(score))
+      ),
+
+      h('div', { className: 'grader-grid', style: { marginTop: 20 } },
+        getCategoryScores(answers).map(c =>
+          h('div', { key: c.label, className: 'grader-card' },
+            h('div', { className: 'grader-card-title' }, c.label),
+            h(ScoreBar, { value: c.score, label: c.label })
+          )
+        )
+      ),
+
+      h(ConsultationCTA, null)
+    )
+  );
+}
+
+// ── APP ROOT ──────────────────────────────────────────────────────────────────
+function App() {
+  return h('div', { className: 'app' },
+    h('div', { className: 'topbar' },
+      h('div', { className: 'topbar-brand' },
+        h('div', { className: 'topbar-logo' }, 'Believe in Taste'),
+        h('span', { className: 'topbar-sep' }, '|'),
+        h('div', { className: 'topbar-sub' }, 'Restaurant Grader')
+      )
+    ),
+    h('div', { className: 'main' },
+      h(GraderApp, null)
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(h(App, null));
+</script>
+</body>
+</html>
