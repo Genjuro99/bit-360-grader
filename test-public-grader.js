@@ -210,6 +210,8 @@ assert('CTA data-cta attribute present',          indexSrc.includes("data-cta': 
 assert('CTA does not link to full-engagement',    !indexSrc.match(/CTA_URL\s*=\s*['"][^'"]*full-engagement/));
 assert('CTA link uses target=_blank',             indexSrc.includes("target: '_blank'"));
 assert('CTA link uses rel=noopener noreferrer',   indexSrc.includes('noopener noreferrer'));
+assert('CTA note says 20-minute call',           indexSrc.includes('20-minute call'));
+assert('CTA note does NOT say 30-minute call',   !indexSrc.includes('30-minute call'));
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // SECTION 9 — No broken local file references
