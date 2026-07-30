@@ -465,11 +465,19 @@ function getCategoryScores(answers) {
 }
 
 // ── COMPONENTS ────────────────────────────────────────────────────────────────
-function RadioGroup({ options, value, onChange }) {
-  return h('div', { className: 'radio-group' },
+function RadioGroup({ options, value, onChange, questionId, questionLabel }) {
+  return h('div', {
+    className: 'radio-group',
+    role: 'radiogroup',
+    'aria-labelledby': questionId
+  },
     options.map(opt =>
       h('button', {
         key: opt.value,
+        type: 'button',
+        role: 'radio',
+        'aria-checked': value === opt.value,
+        'aria-label': `${questionLabel}: ${opt.label}`,
         className: `radio-btn${value === opt.value ? ' selected' : ''}`,
         onClick: () => onChange(opt.value)
       }, opt.label)
@@ -561,8 +569,9 @@ function GraderApp() {
 
     // ── Restaurant name ──
     h('div', { className: 'name-field' },
-      h('label', null, 'Restaurant Name'),
+      h('label', { htmlFor: 'restaurant-name' }, 'Restaurant Name'),
       h('input', {
+        id: 'restaurant-name',
         type: 'text',
         placeholder: 'Enter your restaurant name...',
         value: restaurantName,
@@ -571,12 +580,20 @@ function GraderApp() {
     ),
 
     // ── Progress ──
-    h('div', { className: 'progress-label' },
+    h('div', { className: 'progress-label', 'aria-live': 'polite' },
       h('span', null, `${answered} of ${GRADER_QUESTIONS.length} answered`),
       h('span', null, `Score: ${score}/100`)
     ),
     h('div', { className: 'progress-wrap' },
-      h('div', { className: 'progress-bar', style: { width: `${(answered / GRADER_QUESTIONS.length) * 100}%` } })
+      h('div', {
+        className: 'progress-bar',
+        role: 'progressbar',
+        'aria-label': 'Assessment completion',
+        'aria-valuemin': 0,
+        'aria-valuemax': GRADER_QUESTIONS.length,
+        'aria-valuenow': answered,
+        style: { width: `${(answered / GRADER_QUESTIONS.length) * 100}%` }
+      })
     ),
 
     // ── Questions ──
@@ -585,17 +602,25 @@ function GraderApp() {
         h('div', { className: 'section-body' },
           h('div', { style: { marginBottom: 10 } },
             h('span', { className: 'q-cat' }, q.category.toUpperCase()),
-            h('span', { className: 'q-label' }, q.label)
+            h('span', { id: `question-${q.id}`, className: 'q-label' }, q.label)
           ),
           q.type === 'number'
             ? h('input', {
+                id: `answer-${q.id}`,
                 type: 'number',
+                'aria-labelledby': `question-${q.id}`,
                 placeholder: q.id === 'google_rating' ? '1.0 – 5.0' : 'Enter count...',
                 value: answers[q.id] || '',
                 onChange: e => set(q.id, e.target.value),
                 min: q.min, max: q.max
               })
-            : h(RadioGroup, { options: yesNo, value: answers[q.id], onChange: v => set(q.id, v) })
+            : h(RadioGroup, {
+                options: yesNo,
+                value: answers[q.id],
+                onChange: v => set(q.id, v),
+                questionId: `question-${q.id}`,
+                questionLabel: q.label
+              })
         )
       )
     ),

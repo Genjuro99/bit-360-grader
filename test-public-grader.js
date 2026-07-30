@@ -15,6 +15,7 @@
  *   Section 10 — Mobile: overflow-guard CSS present at 640px and 430px tiers
  *   Section 11 — Desktop: grader-grid 2-col, score-ring present
  *   Section 12 — Branded elements: Believe in Taste, Restaurant Grader
+ *   Section 13 — Accessible names, grouped answers, and progress semantics
  *
  * Run: node test-public-grader.js
  * (from the bit360_public_grader directory)
@@ -210,8 +211,8 @@ assert('CTA data-cta attribute present',          indexSrc.includes("data-cta': 
 assert('CTA does not link to full-engagement',    !indexSrc.match(/CTA_URL\s*=\s*['"][^'"]*full-engagement/));
 assert('CTA link uses target=_blank',             indexSrc.includes("target: '_blank'"));
 assert('CTA link uses rel=noopener noreferrer',   indexSrc.includes('noopener noreferrer'));
-assert('CTA note says 20-minute call',           indexSrc.includes('20-minute call'));
-assert('CTA note does NOT say 30-minute call',   !indexSrc.includes('30-minute call'));
+assert('CTA note says 20-minute call',             indexSrc.includes('20-minute call'));
+assert('CTA note does NOT say 30-minute call',     !indexSrc.includes('30-minute call'));
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // SECTION 9 — No broken local file references
@@ -260,6 +261,23 @@ assert('"Restaurant Grader" in topbar-sub',            indexSrc.includes('Restau
 assert('Gold brand color #c9a84c defined',             indexSrc.includes('#c9a84c'));
 assert('DM Serif Display font defined (system fallback)', indexSrc.includes('DM Serif Display'));
 assert('Meta description present',                     indexSrc.includes('<meta name="description"'));
+
+// =============================================================================
+// SECTION 13 - Accessibility semantics
+// =============================================================================
+console.log('\n-- Section 13: Accessibility semantics --');
+assert('Restaurant label targets the text field',       indexSrc.includes("htmlFor: 'restaurant-name'"));
+assert('Restaurant text field has a stable id',         indexSrc.includes("id: 'restaurant-name'"));
+assert('Question text has a stable accessible id',      indexSrc.includes("id: `question-${q.id}`"));
+assert('Number answers reference their question',       indexSrc.includes("'aria-labelledby': `question-${q.id}`"));
+assert('Answer group uses radiogroup role',             indexSrc.includes("role: 'radiogroup'"));
+assert('Answer group references its question',          indexSrc.includes("'aria-labelledby': questionId"));
+assert('Answer buttons use radio role',                 indexSrc.includes("role: 'radio'"));
+assert('Answer buttons expose checked state',           indexSrc.includes("'aria-checked': value === opt.value"));
+assert('Answer buttons have question-specific labels',  indexSrc.includes("'aria-label': `${questionLabel}: ${opt.label}`"));
+assert('Progress text announces updates politely',      indexSrc.includes("'aria-live': 'polite'"));
+assert('Progress bar exposes progressbar role',         indexSrc.includes("role: 'progressbar'"));
+assert('Progress bar exposes current answer count',     indexSrc.includes("'aria-valuenow': answered"));
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // SUMMARY

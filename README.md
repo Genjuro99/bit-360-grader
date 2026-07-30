@@ -23,6 +23,8 @@ The score shows you where you stand. A Believe in Taste consultation shows you t
 
 Open `index.html` in any modern browser. No server, no build step, no internet connection required.
 
+Candidate release: `v1.0.1-accessibility` (local review only; not deployed).
+
 ---
 
 ## Files
@@ -33,6 +35,8 @@ Open `index.html` in any modern browser. No server, no build step, no internet c
 | `bit360-grader-engine.js` | Grader-only scoring engine (15 questions, 0–100) |
 | `react.production.min.js` | React runtime (local, no CDN) |
 | `react-dom.production.min.js` | ReactDOM runtime (local, no CDN) |
+| `test-public-grader.js` | 118-check regression and accessibility test suite |
+| `ACCESSIBILITY_PATCH_v1.0.1.md` | Scope and change record for this candidate |
 
 ---
 
@@ -50,6 +54,8 @@ Instrument: `lead_grader_v1.1`
 Questions: 15  
 Scale: 0–100  
 No external data sources. No server. No tracking.
+
+Accessibility: question-specific control names, grouped answer semantics, labeled numeric fields, and progress semantics.
 
 ---
 
