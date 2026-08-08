@@ -206,7 +206,7 @@ assert('jspdf.umd.min.js not present in directory', !fs.existsSync(jspdfFile));
 // SECTION 8 — CTA link present and points to non-full-engagement URL
 // ═══════════════════════════════════════════════════════════════════════════════
 console.log('\n── Section 8: CTA link ──');
-assert('CTA_URL is the approved Acuity URL',       indexSrc.includes("const CTA_URL = 'https://believeintaste.as.me/schedule/fd42ae71'"));
+assert('CTA_URL opens the free discovery call',    indexSrc.includes("const CTA_URL = 'https://believeintaste.as.me/schedule/fd42ae71/appointment/96382202/calendar/13794790'"));
 assert('CTA data-cta attribute present',          indexSrc.includes("data-cta': 'consultation'"));
 assert('CTA does not link to full-engagement',    !indexSrc.match(/CTA_URL\s*=\s*['"][^'"]*full-engagement/));
 assert('CTA link uses target=_blank',             indexSrc.includes("target: '_blank'"));
