@@ -422,7 +422,7 @@ function scoreGrade(v) {
   return 'Critical — Act Now';
 }
 function getGraderSummary(score) {
-  if (score >= 85) return 'Strong foundation. Your digital presence is working for you. A deeper consultation can uncover the remaining revenue leaks.';
+  if (score >= 85) return 'Strong foundation. Your digital presence is working for you. A focused review can confirm the remaining opportunities and help protect what is already working.';
   if (score >= 70) return 'You\'re visible, but there are clear gaps that are costing you customers every week.';
   if (score >= 50) return 'Your restaurant is harder to find than it should be. Competitors are capturing customers you should be getting.';
   return 'Critical gaps detected. Customers searching for you are finding your competition instead.';
@@ -498,25 +498,24 @@ function ScoreBar({ value, label }) {
 
 // ── CONSULTATION CTA ──────────────────────────────────────────────────────────
 // Acuity scheduling page — public, no account required
-const CTA_URL = 'https://believeintaste.as.me/schedule/fd42ae71/appointment/96382202/calendar/13794790';
+const CTA_URL = 'https://believeintaste.as.me/schedule/fd42ae71/appointment/96457204/calendar/13794790';
 
 function ConsultationCTA() {
   return h('div', { className: 'cta-banner' },
     h('h3', null, 'Your score is the starting point.'),
     h('p', null,
-      'The Restaurant Grader shows you where the gaps are. A ',
-      h('strong', null, 'Believe in Taste consultation'),
-      ' shows you the root cause, the fix, and the revenue impact — ',
-      h('em', null, 'with a chef consultant and business strategist in the room.')
+      'Want a clearer view of what is working\u2014and what still needs attention\u2014in your restaurant\u2019s digital presence? The ',
+      h('strong', null, '$197 BIT360 Digital Presence Snapshot'),
+      ' reviews one restaurant location across Google, your website and online menu, customer reviews, one primary social platform, and a nearby competitor. Book a free 20-minute fit call to confirm the scope and next step.'
     ),
     h('div', { className: 'cta-features' },
       [
-        'Root-cause diagnosis',
-        'Food cost & margin analysis',
-        'Priority action plan',
-        'Revenue leak identification',
-        'Operational quick wins',
-        'Branded written report'
+        'Google Business Profile',
+        'Website & online menu',
+        'Customer reviews',
+        'One primary social platform',
+        'One nearby competitor',
+        'Branded PDF in 3 business days'
       ].map(f => h('div', { key: f, className: 'cta-feature' }, f))
     ),
     h('a', {
@@ -524,9 +523,9 @@ function ConsultationCTA() {
       className: 'btn btn-primary',
       target: '_blank',
       rel: 'noopener noreferrer',
-      'data-cta': 'consultation'
-    }, 'Book a Free Consultation →'),
-    h('div', { className: 'cta-note' }, 'No commitment. 20-minute call. We\'ll tell you exactly what we see.')
+      'data-cta': 'snapshot-fit-call'
+    }, 'Book a Free Fit Call'),
+    h('div', { className: 'cta-note' }, 'Free 20-minute fit call. No payment on the call. We confirm scope and the right next step.')
   );
 }
 
