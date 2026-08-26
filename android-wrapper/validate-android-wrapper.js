@@ -40,8 +40,12 @@ check('Legacy WebView errors handled', main.includes('int errorCode,') && main.i
 check('Main-frame error state guarded', main.includes('hasMainFrameError') && main.includes('!hasMainFrameError'));
 check('Failed load stopped before branded error', main.includes('view.stopLoading()'));
 check('Successful retry clears failed WebView history', main.includes('view.clearHistory()'));
+check('Android Back exits instead of reopening WebView history',
+  main.includes('public void onBackPressed()') &&
+  main.includes('super.onBackPressed();') &&
+  !main.includes('webView.goBack()'));
 check('Retry control implemented', main.includes('retryButton.setOnClickListener'));
-check('Android back navigation implemented', main.includes('webView.canGoBack()'));
+check('WebView back-history navigation disabled', !main.includes('webView.canGoBack()'));
 check('No professional assessment URL', !main.includes('full-engagement'));
 check('Only Internet permission requested', (manifest.match(/uses-permission/g) || []).length === 1);
 check('Internet permission present', manifest.includes('android.permission.INTERNET'));
@@ -51,13 +55,13 @@ check('No camera permission', !manifest.includes('CAMERA'));
 check('No location permission', !manifest.includes('LOCATION'));
 check('No storage permission', !manifest.includes('STORAGE'));
 check('Correct application ID', appGradle.includes("applicationId 'com.believeintaste.bit360grader'"));
-check('Non-destructive history-QA application ID suffix', appGradle.includes("applicationIdSuffix '.historyqatest'"));
+check('Non-destructive Back-QA application ID suffix', appGradle.includes("applicationIdSuffix '.backqatest'"));
 check('Minimum Android API 26', appGradle.includes('minSdk 26'));
 check('Target Android API 36', appGradle.includes('targetSdk 36'));
 check('Compile Android API 36', appGradle.includes('compileSdk 36'));
-check('Test version code', appGradle.includes('versionCode 107'));
-check('Test version name', appGradle.includes("versionName '1.0.7-test'"));
-check('History-QA app label', strings.includes('BIT360 Grader History QA'));
+check('Test version code', appGradle.includes('versionCode 108'));
+check('Test version name', appGradle.includes("versionName '1.0.8-test'"));
+check('Back-QA app label', strings.includes('BIT360 Grader Back QA'));
 check('Java 17 source', appGradle.includes('JavaVersion.VERSION_17'));
 check('Android Gradle Plugin 9.2.0', rootGradle.includes("version '9.2.0'"));
 check('Workflow uses Java 17', workflow.includes("java-version: '17'"));

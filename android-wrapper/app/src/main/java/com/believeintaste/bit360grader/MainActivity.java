@@ -161,11 +161,12 @@ public final class MainActivity extends Activity {
     @SuppressWarnings("deprecation")
     @Override
     public void onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
+        // The grader is one single-page workflow. External destinations open in the
+        // system browser, so WebView history is never a valid in-app destination.
+        // Exiting here also guarantees that a recovered network-error entry cannot
+        // become visible through Android Back on devices that retain it despite
+        // clearHistory() after Retry.
+        super.onBackPressed();
     }
 
     @Override
