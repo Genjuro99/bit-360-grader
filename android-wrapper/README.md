@@ -4,7 +4,7 @@ This project packages the public BIT360 Restaurant Grader as a small Android app
 
 ## Scope
 
-- Loads only `https://genjuro99.github.io/bit-360-grader/`.
+- Loads only `https://grader.believeintaste.com/` inside the app.
 - Requires an internet connection.
 - Opens consultation and other outside links in the phone's browser.
 - Contains no Professional Assessment, 21-category framework, private scoring engine, or client data.
@@ -12,7 +12,7 @@ This project packages the public BIT360 Restaurant Grader as a small Android app
 
 ## Test build
 
-The GitHub Actions workflow builds a debug-signed APK named `BIT360-Restaurant-Grader-v1.0.1-test.apk`. This is installable for private testing, but it is not a Play Store production release.
+The GitHub Actions workflow builds a debug-signed APK named `BIT360-Restaurant-Grader-v1.0.2-test.apk`. This is installable for private testing, but it is not a Play Store production release.
 
 ## Repository placement
 

@@ -21,9 +21,10 @@ function check(name, condition) {
   if (condition) passed += 1;
 }
 
-check('Exact public grader URL', main.includes('https://genjuro99.github.io/bit-360-grader/'));
-check('Allowed host locked', main.includes('ALLOWED_HOST = "genjuro99.github.io"'));
-check('Allowed path locked', main.includes('ALLOWED_PATH_PREFIX = "/bit-360-grader/"'));
+check('Exact branded grader URL', main.includes('https://grader.believeintaste.com/'));
+check('Branded grader host locked', main.includes('ALLOWED_HOST = "grader.believeintaste.com"'));
+check('Allowed path begins at root', main.includes('ALLOWED_PATH_PREFIX = "/"'));
+check('Legacy GitHub Pages host removed', !main.includes('genjuro99.github.io'));
 check('HTTPS scheme required', main.includes('"https".equalsIgnoreCase(uri.getScheme())'));
 check('External links use system browser', main.includes('new Intent(Intent.ACTION_VIEW, uri)'));
 check('JavaScript enabled for React app', main.includes('setJavaScriptEnabled(true)'));
@@ -48,7 +49,8 @@ check('Correct application ID', appGradle.includes("applicationId 'com.believein
 check('Minimum Android API 26', appGradle.includes('minSdk 26'));
 check('Target Android API 36', appGradle.includes('targetSdk 36'));
 check('Compile Android API 36', appGradle.includes('compileSdk 36'));
-check('Test version name', appGradle.includes("versionName '1.0.1-test'"));
+check('Test version code', appGradle.includes('versionCode 102'));
+check('Test version name', appGradle.includes("versionName '1.0.2-test'"));
 check('Java 17 source', appGradle.includes('JavaVersion.VERSION_17'));
 check('Android Gradle Plugin 9.2.0', rootGradle.includes("version '9.2.0'"));
 check('Workflow uses Java 17', workflow.includes("java-version: '17'"));

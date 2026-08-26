@@ -19,9 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public final class MainActivity extends Activity {
-    private static final String LIVE_URL = "https://genjuro99.github.io/bit-360-grader/";
-    private static final String ALLOWED_HOST = "genjuro99.github.io";
-    private static final String ALLOWED_PATH_PREFIX = "/bit-360-grader/";
+    private static final String LIVE_URL = "https://grader.believeintaste.com/";
+    private static final String ALLOWED_HOST = "grader.believeintaste.com";
+    private static final String ALLOWED_PATH_PREFIX = "/";
 
     private WebView webView;
     private View errorPanel;

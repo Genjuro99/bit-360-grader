@@ -206,12 +206,12 @@ assert('jspdf.umd.min.js not present in directory', !fs.existsSync(jspdfFile));
 // SECTION 8 — CTA link present and points to non-full-engagement URL
 // ═══════════════════════════════════════════════════════════════════════════════
 console.log('\n── Section 8: CTA link ──');
-assert('CTA_URL opens the free discovery call',    indexSrc.includes("const CTA_URL = 'https://believeintaste.as.me/schedule/fd42ae71/appointment/96382202/calendar/13794790'"));
-assert('CTA data-cta attribute present',          indexSrc.includes("data-cta': 'consultation'"));
+assert('CTA_URL opens the Snapshot Fit Call',     indexSrc.includes("const CTA_URL = 'https://believeintaste.as.me/schedule/fd42ae71/appointment/96457204/calendar/13794790'"));
+assert('CTA data-cta attribute present',          indexSrc.includes("data-cta': 'snapshot-fit-call'"));
 assert('CTA does not link to full-engagement',    !indexSrc.match(/CTA_URL\s*=\s*['"][^'"]*full-engagement/));
 assert('CTA link uses target=_blank',             indexSrc.includes("target: '_blank'"));
 assert('CTA link uses rel=noopener noreferrer',   indexSrc.includes('noopener noreferrer'));
-assert('CTA note says 20-minute call',             indexSrc.includes('20-minute call'));
+assert('CTA note says 20-minute fit call',         indexSrc.includes('20-minute fit call'));
 assert('CTA note does NOT say 30-minute call',     !indexSrc.includes('30-minute call'));
 
 // ═══════════════════════════════════════════════════════════════════════════════
