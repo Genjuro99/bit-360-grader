@@ -39,6 +39,7 @@ check('Main-frame errors handled', main.includes('request.isForMainFrame()'));
 check('Legacy WebView errors handled', main.includes('int errorCode,') && main.includes('String failingUrl'));
 check('Main-frame error state guarded', main.includes('hasMainFrameError') && main.includes('!hasMainFrameError'));
 check('Failed load stopped before branded error', main.includes('view.stopLoading()'));
+check('Successful retry clears failed WebView history', main.includes('view.clearHistory()'));
 check('Retry control implemented', main.includes('retryButton.setOnClickListener'));
 check('Android back navigation implemented', main.includes('webView.canGoBack()'));
 check('No professional assessment URL', !main.includes('full-engagement'));
@@ -54,8 +55,8 @@ check('Non-destructive offline-QA application ID suffix', appGradle.includes("ap
 check('Minimum Android API 26', appGradle.includes('minSdk 26'));
 check('Target Android API 36', appGradle.includes('targetSdk 36'));
 check('Compile Android API 36', appGradle.includes('compileSdk 36'));
-check('Test version code', appGradle.includes('versionCode 105'));
-check('Test version name', appGradle.includes("versionName '1.0.5-test'"));
+check('Test version code', appGradle.includes('versionCode 106'));
+check('Test version name', appGradle.includes("versionName '1.0.6-test'"));
 check('Offline-QA app label', strings.includes('BIT360 Grader Offline QA'));
 check('Java 17 source', appGradle.includes('JavaVersion.VERSION_17'));
 check('Android Gradle Plugin 9.2.0', rootGradle.includes("version '9.2.0'"));

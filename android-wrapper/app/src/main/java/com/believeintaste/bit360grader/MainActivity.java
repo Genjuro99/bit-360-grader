@@ -69,6 +69,10 @@ public final class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 if (!hasMainFrameError && isAllowedGraderUrl(Uri.parse(url))) {
+                    // The grader is a single-page experience and external links open in the
+                    // system browser. Remove failed retry entries so Android Back can never
+                    // reveal WebView's raw network-error page after a successful recovery.
+                    view.clearHistory();
                     showWebView();
                 }
             }

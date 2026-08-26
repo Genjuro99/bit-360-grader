@@ -12,7 +12,7 @@ This project packages the public BIT360 Restaurant Grader as a small Android app
 
 ## Test build
 
-The GitHub Actions workflow builds a debug-signed APK named `BIT360-Restaurant-Grader-v1.0.5-offline-qa-test.apk`. Its debug application ID is `com.believeintaste.bit360grader.offlineqatest`, so its first launch can verify the offline error path without cached WebView content and without replacing preserved test builds or erasing their data. This is installable for private testing, but it is not a Play Store production release.
+The GitHub Actions workflow builds a debug-signed APK named `BIT360-Restaurant-Grader-v1.0.6-recovery-history-test.apk`. Its debug application ID is `com.believeintaste.bit360grader.offlineqatest`, preserving the isolated offline-QA install while updating it to verify that a successful Retry clears the failed WebView history entry. Other preserved test builds and their data are not replaced. This is installable for private testing, but it is not a Play Store production release.
 
 ## Repository placement
 
