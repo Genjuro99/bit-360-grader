@@ -10,13 +10,14 @@ android {
         applicationId 'com.believeintaste.bit360grader'
         minSdk 26
         targetSdk 36
-        versionCode 102
-        versionName '1.0.2-test'
+        versionCode 103
+        versionName '1.0.3-test'
     }
 
     buildTypes {
         debug {
-            applicationIdSuffix '.test'
+            // Separate package preserves the previously installed test app and its data.
+            applicationIdSuffix '.repairtest'
             versionNameSuffix '-debug'
             debuggable true
         }

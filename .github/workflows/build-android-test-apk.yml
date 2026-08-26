@@ -42,13 +42,13 @@ jobs:
       - name: Prepare named APK and checksum
         run: |
           mkdir -p android-wrapper/dist
-          cp android-wrapper/app/build/outputs/apk/debug/app-debug.apk android-wrapper/dist/BIT360-Restaurant-Grader-v1.0.2-test.apk
-          sha256sum android-wrapper/dist/BIT360-Restaurant-Grader-v1.0.2-test.apk > android-wrapper/dist/SHA256SUMS.txt
+          cp android-wrapper/app/build/outputs/apk/debug/app-debug.apk android-wrapper/dist/BIT360-Restaurant-Grader-v1.0.3-repair-test.apk
+          sha256sum android-wrapper/dist/BIT360-Restaurant-Grader-v1.0.3-repair-test.apk > android-wrapper/dist/SHA256SUMS.txt
 
       - name: Upload installable test APK
         uses: actions/upload-artifact@v4
         with:
-          name: BIT360-Grader-v1.0.2-test-apk
+          name: BIT360-Grader-v1.0.3-repair-test-apk
           path: android-wrapper/dist/
           if-no-files-found: error
           retention-days: 30
