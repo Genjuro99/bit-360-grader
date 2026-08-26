@@ -26,6 +26,7 @@ public final class MainActivity extends Activity {
     private WebView webView;
     private View errorPanel;
     private TextView errorMessage;
+    private boolean hasMainFrameError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +61,14 @@ public final class MainActivity extends Activity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 if (isAllowedGraderUrl(Uri.parse(url))) {
+                    hasMainFrameError = false;
                     showWebView();
                 }
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                if (isAllowedGraderUrl(Uri.parse(url))) {
+                if (!hasMainFrameError && isAllowedGraderUrl(Uri.parse(url))) {
                     showWebView();
                 }
             }
@@ -77,7 +79,19 @@ public final class MainActivity extends Activity {
                     WebResourceRequest request,
                     WebResourceError error) {
                 if (request.isForMainFrame()) {
-                    showError(getString(R.string.connection_error));
+                    showConnectionError(view);
+                }
+            }
+
+            @SuppressWarnings("deprecation")
+            @Override
+            public void onReceivedError(
+                    WebView view,
+                    int errorCode,
+                    String description,
+                    String failingUrl) {
+                if (failingUrl != null && isAllowedGraderUrl(Uri.parse(failingUrl))) {
+                    showConnectionError(view);
                 }
             }
 
@@ -87,6 +101,7 @@ public final class MainActivity extends Activity {
                     SslErrorHandler handler,
                     SslError error) {
                 handler.cancel();
+                hasMainFrameError = true;
                 showError(getString(R.string.security_error));
             }
         });
@@ -116,9 +131,16 @@ public final class MainActivity extends Activity {
     }
 
     private void loadGrader() {
+        hasMainFrameError = false;
         errorPanel.setVisibility(View.GONE);
         webView.setVisibility(View.VISIBLE);
         webView.loadUrl(LIVE_URL);
+    }
+
+    private void showConnectionError(WebView view) {
+        hasMainFrameError = true;
+        view.stopLoading();
+        showError(getString(R.string.connection_error));
     }
 
     private void showWebView() {

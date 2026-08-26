@@ -12,7 +12,7 @@ This project packages the public BIT360 Restaurant Grader as a small Android app
 
 ## Test build
 
-The GitHub Actions workflow builds a debug-signed APK named `BIT360-Restaurant-Grader-v1.0.3-repair-test.apk`. Its debug application ID is `com.believeintaste.bit360grader.repairtest`, so it can be installed beside the preserved `com.believeintaste.bit360grader.test` build without replacing it or erasing its data. This is installable for private testing, but it is not a Play Store production release.
+The GitHub Actions workflow builds a debug-signed APK named `BIT360-Restaurant-Grader-v1.0.4-qa-test.apk`. Its debug application ID is `com.believeintaste.bit360grader.qatest`, so it can be installed beside preserved test builds without replacing them or erasing their data. This is installable for private testing, but it is not a Play Store production release.
 
 ## Repository placement
 
