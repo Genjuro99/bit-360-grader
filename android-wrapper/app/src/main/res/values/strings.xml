@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BIT360 Grader Back QA</string>
+    <string name="app_name">BIT360 Restaurant Grader</string>
     <string name="error_title">BIT360 Grader</string>
     <string name="connection_error">The grader could not connect. Check your internet connection and try again.</string>
     <string name="security_error">The secure connection could not be verified. Please try again later.</string>
