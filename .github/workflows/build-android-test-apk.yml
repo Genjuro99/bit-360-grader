@@ -36,7 +36,25 @@ jobs:
         with:
           gradle-version: '9.4.1'
 
+      - name: Restore stable private test keystore
+        env:
+          BIT360_TEST_KEYSTORE_BASE64: ${{ secrets.BIT360_TEST_KEYSTORE_BASE64 }}
+          BIT360_TEST_STORE_PASSWORD: ${{ secrets.BIT360_TEST_STORE_PASSWORD }}
+          BIT360_TEST_KEY_ALIAS: ${{ secrets.BIT360_TEST_KEY_ALIAS }}
+          BIT360_TEST_KEY_PASSWORD: ${{ secrets.BIT360_TEST_KEY_PASSWORD }}
+        run: |
+          test -n "$BIT360_TEST_KEYSTORE_BASE64"
+          test -n "$BIT360_TEST_STORE_PASSWORD"
+          test -n "$BIT360_TEST_KEY_ALIAS"
+          test -n "$BIT360_TEST_KEY_PASSWORD"
+          printf '%s' "$BIT360_TEST_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/bit360-test-signing.p12"
+
       - name: Build debug APK
+        env:
+          BIT360_TEST_KEYSTORE_PATH: ${{ runner.temp }}/bit360-test-signing.p12
+          BIT360_TEST_STORE_PASSWORD: ${{ secrets.BIT360_TEST_STORE_PASSWORD }}
+          BIT360_TEST_KEY_ALIAS: ${{ secrets.BIT360_TEST_KEY_ALIAS }}
+          BIT360_TEST_KEY_PASSWORD: ${{ secrets.BIT360_TEST_KEY_PASSWORD }}
         run: gradle -p android-wrapper clean assembleDebug
 
       - name: Prepare named APK and checksum
@@ -44,6 +62,7 @@ jobs:
           mkdir -p android-wrapper/dist
           cp android-wrapper/app/build/outputs/apk/debug/app-debug.apk android-wrapper/dist/BIT360-Restaurant-Grader-v1.0.2-test.apk
           sha256sum android-wrapper/dist/BIT360-Restaurant-Grader-v1.0.2-test.apk > android-wrapper/dist/SHA256SUMS.txt
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs android-wrapper/dist/BIT360-Restaurant-Grader-v1.0.2-test.apk > android-wrapper/dist/SIGNING-CERTIFICATE.txt
 
       - name: Upload installable test APK
         uses: actions/upload-artifact@v4
@@ -52,3 +71,7 @@ jobs:
           path: android-wrapper/dist/
           if-no-files-found: error
           retention-days: 30
+
+      - name: Remove restored test keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/bit360-test-signing.p12"

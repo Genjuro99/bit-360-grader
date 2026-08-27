@@ -2,6 +2,17 @@ plugins {
     id 'com.android.application'
 }
 
+def testKeystorePath = System.getenv('BIT360_TEST_KEYSTORE_PATH')
+def testStorePassword = System.getenv('BIT360_TEST_STORE_PASSWORD')
+def testKeyAlias = System.getenv('BIT360_TEST_KEY_ALIAS')
+def testKeyPassword = System.getenv('BIT360_TEST_KEY_PASSWORD')
+def hasStableTestSigning = [
+        testKeystorePath,
+        testStorePassword,
+        testKeyAlias,
+        testKeyPassword
+].every { value -> value != null && !value.trim().isEmpty() }
+
 android {
     namespace 'com.believeintaste.bit360grader'
     compileSdk 36
@@ -14,11 +25,26 @@ android {
         versionName '1.0.2-test'
     }
 
+    signingConfigs {
+        stableTest {
+            if (hasStableTestSigning) {
+                storeFile file(testKeystorePath)
+                storePassword testStorePassword
+                keyAlias testKeyAlias
+                keyPassword testKeyPassword
+                storeType 'PKCS12'
+            }
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix '.test'
             versionNameSuffix '-debug'
             debuggable true
+            if (hasStableTestSigning) {
+                signingConfig signingConfigs.stableTest
+            }
         }
         release {
             minifyEnabled false

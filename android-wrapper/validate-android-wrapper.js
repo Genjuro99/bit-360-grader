@@ -9,6 +9,7 @@ const main = read('app/src/main/java/com/believeintaste/bit360grader/MainActivit
 const manifest = read('app/src/main/AndroidManifest.xml');
 const appGradle = read('app/build.gradle');
 const strings = read('app/src/main/res/values/strings.xml');
+const gitignore = read('../.gitignore');
 const rootGradle = read('build.gradle');
 const localWorkflow = path.join(root, '.github/workflows/build-android-test-apk.yml');
 const deployedWorkflow = path.join(root, '../.github/workflows/build-android-test-apk.yml');
@@ -56,6 +57,15 @@ check('No location permission', !manifest.includes('LOCATION'));
 check('No storage permission', !manifest.includes('STORAGE'));
 check('Correct application ID', appGradle.includes("applicationId 'com.believeintaste.bit360grader'"));
 check('Standard test application ID suffix', appGradle.includes("applicationIdSuffix '.test'"));
+check('Stable test signing is environment-gated',
+  appGradle.includes("System.getenv('BIT360_TEST_KEYSTORE_PATH')") &&
+  appGradle.includes('hasStableTestSigning'));
+check('Stable test signing uses PKCS12', appGradle.includes("storeType 'PKCS12'"));
+check('Private signing files are ignored',
+  gitignore.includes('*.jks') &&
+  gitignore.includes('*.keystore') &&
+  gitignore.includes('*.p12') &&
+  gitignore.includes('key.properties'));
 check('Minimum Android API 26', appGradle.includes('minSdk 26'));
 check('Target Android API 36', appGradle.includes('targetSdk 36'));
 check('Compile Android API 36', appGradle.includes('compileSdk 36'));
@@ -70,8 +80,27 @@ check('Workflow installs Android 36', workflow.includes("'platforms;android-36'"
 check('Workflow builds debug APK', workflow.includes('clean assembleDebug'));
 check('Workflow uploads APK artifact', workflow.includes('actions/upload-artifact@v4'));
 check('Workflow creates SHA-256 record', workflow.includes('sha256sum'));
+check('Workflow verifies APK and records signing certificate',
+  workflow.includes('apksigner') &&
+  workflow.includes('SIGNING-CERTIFICATE.txt'));
 check('Workflow has read-only contents permission', workflow.includes('contents: read'));
-check('No workflow secrets used', !workflow.includes('secrets.'));
+check('Workflow uses only the four approved test-signing secrets', (() => {
+  const actual = [...workflow.matchAll(/secrets\.([A-Z0-9_]+)/g)].map(match => match[1]);
+  const unique = [...new Set(actual)].sort();
+  const expected = [
+    'BIT360_TEST_KEYSTORE_BASE64',
+    'BIT360_TEST_KEY_ALIAS',
+    'BIT360_TEST_KEY_PASSWORD',
+    'BIT360_TEST_STORE_PASSWORD'
+  ].sort();
+  return JSON.stringify(unique) === JSON.stringify(expected);
+})());
+check('Workflow removes restored test keystore',
+  workflow.includes('if: always()') &&
+  workflow.includes('rm -f "$RUNNER_TEMP/bit360-test-signing.p12"'));
+check('Workflow does not print signing secrets',
+  !workflow.includes('echo "$BIT360_TEST_') &&
+  !workflow.includes('set -x'));
 
 for (const result of checks) {
   console.log(`${result.condition ? 'PASS' : 'FAIL'} — ${result.name}`);
